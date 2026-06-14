@@ -37,3 +37,70 @@ CREATE TABLE contacts (
 
 </body>
 </html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Management Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        input {
+            padding: 10px;
+            width: 250px;
+        }
+
+        button {
+            padding: 10px;
+            margin-left: 5px;
+        }
+
+        li {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Task Management Application</h2>
+
+    <input type="text" id="taskInput" placeholder="Enter Task">
+    <button onclick="addTask()">Add Task</button>
+
+    <ul id="taskList"></ul>
+
+    <script>
+        function addTask() {
+            let task = document.getElementById("taskInput").value;
+
+            if(task === "") {
+                alert("Enter a task!");
+                return;
+            }
+
+            let li = document.createElement("li");
+            li.innerHTML = task +
+                " <button onclick='editTask(this)'>Edit</button>" +
+                " <button onclick='deleteTask(this)'>Delete</button>";
+
+            document.getElementById("taskList").appendChild(li);
+            document.getElementById("taskInput").value = "";
+        }
+
+        function deleteTask(button) {
+            button.parentElement.remove();
+        }
+
+        function editTask(button) {
+            let newTask = prompt("Edit Task:", button.parentElement.firstChild.textContent);
+            if(newTask != null) {
+                button.parentElement.firstChild.textContent = newTask + " ";
+            }
+        }
+    </script>
+
+</body>
+</html>
