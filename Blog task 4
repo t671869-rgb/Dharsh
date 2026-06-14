@@ -1,0 +1,89 @@
+<?php
+$conn = mysqli_connect("localhost", "root", "", "blog_db");
+
+if (!$conn) {
+    die("Connection Failed");
+}
+
+/* Create Post */
+if (isset($_POST['add_post'])) {
+    $title = $_POST['title'];
+    $content = $_POST['content'];
+
+    mysqli_query($conn, "INSERT INTO posts(title,content)
+    VALUES('$title','$content')");
+}
+
+/* Add Comment */
+if (isset($_POST['add_comment'])) {
+    $post_id = $_POST['post_id'];
+    $comment = $_POST['comment'];
+
+    mysqli_query($conn, "INSERT INTO comments(post_id,comment)
+    VALUES('$post_id','$comment')");
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blog Platform with Comments</title>
+</head>
+<body>
+
+<h1>Blog Platform with Comments</h1>
+
+<h2>Create New Post</h2>
+<form method="post">
+    Title:<br>
+    <input type="text" name="title" required><br><br>
+
+    Content:<br>
+    <textarea name="content" rows="5" cols="40" required></textarea><br><br>
+
+    <input type="submit" name="add_post" value="Publish Post">
+</form>
+
+<hr>
+
+<h2>All Blog Posts</h2>
+
+<?php
+$result = mysqli_query($conn, "SELECT * FROM posts ORDER BY id DESC");
+
+while ($post = mysqli_fetch_assoc($result)) {
+?>
+    <h3><?php echo $post['title']; ?></h3>
+    <p><?php echo $post['content']; ?></p>
+
+    <b>Comments:</b><br>
+
+    <?php
+    $pid = $post['id'];
+    $comments = mysqli_query($conn,
+    "SELECT * FROM comments WHERE post_id=$pid");
+
+    while ($c = mysqli_fetch_assoc($comments)) {
+        echo "- " . $c['comment'] . "<br>";
+    }
+    ?>
+
+    <br>
+    <form method="post">
+        <input type="hidden" name="post_id"
+        value="<?php echo $pid; ?>">
+
+        <input type="text" name="comment"
+        placeholder="Write a comment" required>
+
+        <input type="submit" name="add_comment"
+        value="Add Comment">
+    </form>
+
+    <hr>
+<?php
+}
+?>
+
+</body>
+</html>
